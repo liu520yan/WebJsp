@@ -13,6 +13,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import sample.jsp.hybris.GlobalMessage;
 
 public class Hello2HandlerInterceptorAdapter extends HandlerInterceptorAdapter {
@@ -45,17 +46,16 @@ public class Hello2HandlerInterceptorAdapter extends HandlerInterceptorAdapter {
             globalMsg.setAttributes(attributeList);
             globalMsg.setCode(messageKey);
             if (FLASH.equals(type)) {
-                List<GlobalMessage> globalMessages = (List<GlobalMessage>) request.getSession()
-                    .getAttribute(messageHolder);
+                List<GlobalMessage> globalMessages = (List<GlobalMessage>) RequestContextUtils.getOutputFlashMap(request).get(messageHolder);
                 if (CollectionUtils.isEmpty(globalMessages)) {
                     globalMessages = new ArrayList<>();
-                    request.getSession().setAttribute(messageHolder, globalMessages);
-                }
+					RequestContextUtils.getOutputFlashMap(request).put(messageHolder, globalMessages);
+				}
                 globalMessages.add(globalMsg);
             } else if (NO_FLASH.equals(type) && modelAndView != null && !CollectionUtils
                 .isEmpty(modelAndView.getModelMap())) {
                 ModelMap modelMap = modelAndView.getModelMap();
-                List<GlobalMessage> globalMessages = (List<GlobalMessage>) modelMap.get(messageHolder);
+                List<GlobalMessage> globalMessages = (List<GlobalMessage>) RequestContextUtils.getOutputFlashMap(request).get(messageHolder);
                 if (CollectionUtils.isEmpty(globalMessages)) {
                     globalMessages = new ArrayList<>();
                     modelMap.addAttribute(messageHolder, globalMessages);
