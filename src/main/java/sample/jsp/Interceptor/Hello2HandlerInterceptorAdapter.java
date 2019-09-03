@@ -1,12 +1,5 @@
 package sample.jsp.Interceptor;
 
-import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -15,6 +8,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import sample.jsp.hybris.GlobalMessage;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
 public class Hello2HandlerInterceptorAdapter extends HandlerInterceptorAdapter {
 
@@ -30,9 +31,9 @@ public class Hello2HandlerInterceptorAdapter extends HandlerInterceptorAdapter {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-        ModelAndView modelAndView) throws Exception {
+                           ModelAndView modelAndView) throws Exception {
         final ServletRequestAttributes attributes = ((ServletRequestAttributes) RequestContextHolder
-            .getRequestAttributes());
+                .getRequestAttributes());
         List<Map> msgList = (List<Map>) attributes.getAttribute(REQUESTKEY, SCOPE_REQUEST);
         if (CollectionUtils.isEmpty(msgList)) {
             msgList = new ArrayList<>();
@@ -49,11 +50,10 @@ public class Hello2HandlerInterceptorAdapter extends HandlerInterceptorAdapter {
                 List<GlobalMessage> globalMessages = (List<GlobalMessage>) RequestContextUtils.getOutputFlashMap(request).get(messageHolder);
                 if (CollectionUtils.isEmpty(globalMessages)) {
                     globalMessages = new ArrayList<>();
-					RequestContextUtils.getOutputFlashMap(request).put(messageHolder, globalMessages);
-				}
+                    RequestContextUtils.getOutputFlashMap(request).put(messageHolder, globalMessages);
+                }
                 globalMessages.add(globalMsg);
-            } else if (NO_FLASH.equals(type) && modelAndView != null && !CollectionUtils
-                .isEmpty(modelAndView.getModelMap())) {
+            } else if (NO_FLASH.equals(type) && modelAndView != null && null != modelAndView.getModelMap()) {
                 ModelMap modelMap = modelAndView.getModelMap();
                 List<GlobalMessage> globalMessages = (List<GlobalMessage>) RequestContextUtils.getOutputFlashMap(request).get(messageHolder);
                 if (CollectionUtils.isEmpty(globalMessages)) {
